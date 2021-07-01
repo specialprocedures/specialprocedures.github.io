@@ -6,6 +6,9 @@ root: /
 baseurl: /
 url:                "https://specialprocedures.github.io"
 
+# Set encoding
+encoding: utf-8
+
 # Social Profiles
 twitter_username:   
 github_username:    specialprocedures
