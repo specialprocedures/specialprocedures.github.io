@@ -6,33 +6,29 @@ date: 2021-07-01 16:45:13 -0400
 background: '/img/posts/helloworld/jekyll-hyde.jpg'
 ---
 
-# Introduction
-After procrastinating for years, I’ve finally set up a blog to host some of my work. It turned out to be pretty easy, so I figured a good place to start in terms of getting some content up would be to document the process. I’m not going to pretend I’ve done anything particularly interesting or innovative – the most useful resource I found in getting going was a [seven-year old blog post](https://www.smashingmagazine.com/2014/08/build-blog-jekyll-github-pages/) – but this blog is about helping me learn more than anything else, and I hope by writing things up I'm going to understand my site a little better.
+This post describes the process for setting up a simple blog using Github Pages and the static-site generator, Jekyll. It will to cover the absolute basics and will require nothing more than a GitHub account and a basic knowledge of how repositories work. You'll need to know how to make changes to files in a repository and to understand forking. If you need help on this front, GitHub has some [useful guides](https://guides.github.com/) you might want to look at.
 
-# Our tools
-This post describes the process for setting up a simple blog using Github Pages and the static-site generator, Jekyll. It will to cover the absolute basics and will require nothing more than a GitHub account and a basic knowledge of how repositories work. You'll need to know how to make changes to files in a repository you own and understand how to fork another repository. If you need help on this front, GitHub has some [useful guides](https://guides.github.com/) it's worth checking out first.
-
-I'm going to describe the quickest and easiest way to get going, which doesn't even require much understanding of Jekyll or for you to have it installed on your machine. I'll begin with a quick overview of GitHub Pages and Jekyll. If you just want the guide, then feel free to [skip ahead](#Building-a-site).
+I'm going to describe the quickest and easiest way to get going. I'll begin with a quick overview of GitHub Pages and Jekyll. If you just want the guide, then feel free to [skip ahead](#-Building-a-site).
 
 ## GitHub Pages
-[GitHub Pages](https://pages.github.com/) is a neat service provided by GitHub which provides free, static websites for its users. What do I mean by 'static'? Static site avoid a lot of the complexity of modern web design, they don't need databases, user accounts or scripting. Information is presented 'as stored' to the user and is viewed by everyone in exactly the same way. 
+[GitHub Pages](https://pages.github.com/) is a neat service provided by GitHub which provides free, static websites for its users. What do I mean by 'static'? Static sites avoid a lot of the complexity of modern web design, they don't need databases, user accounts or scripting. Information is presented 'as stored' to the user and is viewed by everyone in exactly the same way. 
 
-By using GitHub, I get free (as in beer) hosting, whilst not having to get involved in any of the hassle of hosting a site and database, having to learn any new languages or frameworks, or even having to worry too much about security. All the updates to the site are managed through commits, which I'm already using and in need of practice with, but if I'm feeling lazy or despair with Git, it's still totally possible to just drag and drop files up to GitHub.
+By using GitHub, I get free (as in beer) hosting, whilst not having to get involved in any of the hassle of hosting a site and database, having to learn any new languages or frameworks, or even having to worry too much about security.
 
-Sure, things like SquareSpace and Medium exist, but this way is properly free, without banners or restrictions on how many articles users can read, and I get a nice GitHub URL as befits a nerd such as myself. I can always change up for my own domain for free if I like (and probably will), and if I decide I want to host it myself at any point, I can.
+Sure, things like SquareSpace and Medium exist, but this way is properly free, without banners or restrictions on how many articles users can read. I also get a nice GitHub URL as befits a nerd such as myself. I can always change up for my own domain for free if I like (and probably will), and if I decide I want to host it myself at any point, I can.
 
 ## Jekyll
-So GitHub pages does the hosting, [Jekyll](https://jekyllrb.com/) builds the site. Jekyll breathes in Markdown (and HTML and CSS, if you like) and breathes out a fully-fledged site ready to go. There are lots of other [static site generators](https://www.techradar.com/best/static-site-generators) out there, but Jekyll is well-supported by GitHub pages[^2] and has been around for ages so has lots of support and templates.
+So GitHub pages does the hosting, [Jekyll](https://jekyllrb.com/) builds the site. Jekyll breathes in Markdown (and HTML and CSS, if you like) and breathes out a site ready to go. There are lots of other [static site generators](https://www.techradar.com/best/static-site-generators), but Jekyll is well-supported by GitHub pages[^2] and has been around for ages so has lots of users, guides and templates.
 
 # Building a site
-Templates are key here, as we're not going to worry about Jekyll too much and just use an off-the-shelf layout. The basic process for what we'll do involves finding a template, forking it to our GitHub repository, making some configuration tweaks, adding a bit of content, pushing the changes, and we're done.
+Templates are key here, as we're not going to worry about Jekyll too much and just use an off-the-shelf layout. The basic process for what we'll do involves little more than finding a template, forking it to our GitHub repository, making some configuration tweaks, and adding a bit of content.
 
 ## Step 1: Fork or download a template
 The first thing we need to do is find a template for our blog. There are a bunch of different sites offering Jekyll themes, I used [jekyllthemes.io](https://jekyllthemes.io/free), and [GitHub](https://github.com/topics/jekyll-theme) has a tonne, but you might also want to check out [jamstackthemes.dev](jamstackthemes.dev), [jekyllthemes.org](jekyllthemes.org) or [jekyll-themes.com](jekyll-themes.com).
 
 The site I used offers both free and paid options, but I'm not after anything fancy -- quite the opposite -- so I browse the free collection till I find something I like the look of.
 
-![Choosing a theme at jekyllthemes.io](/img/posts/helloworld/jekyll-themes.png)
+<img class="img-fluid" src="/img/posts/helloworld/jekyll-themes.png" alt="Choosing a theme at jekyllthemes.io">
 
 Clicking through gives us a link to the [GitHub page](https://github.com/StartBootstrap/startbootstrap-clean-blog-jekyll) which hosts the template. The README.md gives a bunch of instructions for using the theme, which we can completely ignore. The beauty of using GitHub pages is that we can fork the repository, edit our fork and that's our site! 
 
@@ -54,20 +50,18 @@ So for me, this would be:
 
 You can change the name from your repository page by clicking on Settings, and it should be the first setting you see.
 
-![Changing your repository name in Settings](/img/posts/helloworld/github-name.png)
+<img class="img-fluid" src="/img/posts/helloworld/github-name.png" alt="Changing your repository name in Settings">
 
 GitHub is now aware that you want the repository to be hosted as a page. In theory this means you should be able to navigate to ```your_github_username.github.io``` in your browser and see it hosted, but I've found that Pages only updates after each commit. So let's make a few tweaks and come back to it in a moment.
 
 ## Step 4: Editing the configuration file
 In the root directory of your template, you should see a file called ```_config.yml```. The exact fields presented may differ depending on the template you've chosen, but I changed the following:
 
-```
-title:              Your website title, this will appear in your title bar and landing page
-email:              Your email
-description:        A descriptive tag-line for your site
-author:             Your name
-url:                This is super-important, it should be "https://your_github_username.github.io"
-```
+    title:              Your website title, this will appear in your title bar and landing page
+    email:              Your email
+    description:        A descriptive tag-line for your site
+    author:             Your name
+    url:                This is super-important, it should be "https://your_github_username.github.io"
 
 Don't forget to update the URL field, I missed that first time round and it broke the site's CSS. There also settings for adding your social media accounts as buttons, to integrate Google Analytics, and to configure markdown options or plugins. Update whatever you want here.
 
@@ -78,7 +72,7 @@ From here on out, it's just about updating content. Different templates come wit
 
 Files can be edited using Markdown, HTML, or even plain text. All of my template files were saved at ```.html```, but if you want to edit in Markdown, you'll need to change the extension to ```.md```. Each file in your template should come with a header containing a series of fields (e.g., layout, title, date) which will update relevant parts of the page, and then after the header comes your content. Here's an example from this very post:
 
-![Writing a blog post](/img/posts/helloworld/writing-content.png)
+<img class="img-fluid" src="/img/posts/helloworld/writing-content.png" alt="Writing a blog post">
 
 ### Two important things on content
 Creating content for your blog is very straightforward, which to me is one of the the main attractions of this approach. There are however a couple of things that you need to be aware of:
