@@ -1,0 +1,6 @@
+{{ if .Scratch.Get "hasHaiku" }}
+<!-- Scroll spy for haiku text -->
+{{ with resources.Get "scroll-spy.js" | resources.Minify }}
+<script>{{ .Content | safeJS }}</script>
+{{ end }}
+{{ end }}

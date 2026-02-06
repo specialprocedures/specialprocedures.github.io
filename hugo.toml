@@ -1,0 +1,33 @@
+baseURL = ''
+languageCode = 'en-us'
+title = 'Welcome to Patara'
+copyright = ''
+
+theme = 'hugo-book'
+
+# Needed for mermaid/katex shortcodes
+[markup]
+[markup.goldmark.renderer]
+unsafe = true
+
+[params]
+BookSearch = false
+# Use docs as the main book section
+BookSection = "docs"
+# Disable page navigation buttons
+BookDisableNavigation = true
+# Favicon
+BookFavicon = "favicon.png"
+BookTheme = 'dark'
+# Hugo Book theme menus
+[menu]
+[[menu.after]]
+name = "Pixelfed"
+url = "https://pixelfed.social/specialprocedures"
+weight = 5
+
+# For github deployment
+# https://gohugo.io/host-and-deploy/host-on-github-pages/
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'

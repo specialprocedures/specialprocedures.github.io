@@ -1,0 +1,12 @@
+/*
+  Grungy cyberpunk fonts
+  Main font: VT323 - CRT terminal aesthetic, raw and pixelated
+  Display font: Major Mono Display - brutalist, industrial lowercase
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Major+Mono+Display&display=swap');
+
+:root {
+  --font-mono: 'VT323', 'Courier New', monospace;
+  --font-display: 'Major Mono Display', monospace;
+}

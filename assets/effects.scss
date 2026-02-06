@@ -1,0 +1,123 @@
+// Gallery Effects - Glitch/Spazz hover effect and fullscreen
+
+// Filter configuration (reference for JS implementation)
+$filters: (
+    saturate: (
+        units: '',
+        range: (
+            min: 1,
+            max: 10
+        ),
+        probability: 1/5
+    ),
+    hue-rotate: (
+        units: 'deg',
+        probability: 1,
+        range: (
+            min: 0,
+            max: 360
+        ), 
+    ),
+    invert: (
+        units: '',
+        probability: 1/30,
+        range: (
+            min: 1,
+            max: 1
+        ),
+    ),
+    contrast: (
+        units: '',
+        probability: 1/10,
+        range: (
+            min: 1,
+            max: 10
+        ),
+    ),
+    brightness: (
+        units: '%',
+        probability: 1/20,
+        range: (
+            min: 25,
+            max: 75
+        ),
+    )
+);
+
+// Fullscreen overlay styles
+.gallery-fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    cursor: zoom-out;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    
+    &.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    img {
+        max-width: 95vw;
+        max-height: 95vh;
+        object-fit: contain;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    }
+    
+    .fullscreen-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 10000;
+        
+        &:hover {
+            color: #ccc;
+        }
+    }
+}
+
+// Gallery item hover effects
+.gallery-item {
+    cursor: zoom-in;
+    transition: transform 0.1s ease;
+    
+    &.glitch-hover {
+        animation: glitch-spazz 0.1s steps(1) infinite;
+    }
+    
+    img {
+        transition: filter 0.05s ease;
+    }
+}
+
+// Pre-generated glitch keyframes (fallback when JS doesn't run)
+@keyframes glitch-spazz {
+    @for $i from 0 through 20 {
+        #{$i * 5}% {
+            $filter_css_value: '';
+            @each $filter, $filter_props in $filters {
+                @if((random(100) / 100) < map-get($filter_props, probability)) {
+                    $range: map-get($filter_props, range);
+                    $min: map-get($range, min);
+                    $max: map-get($range, max);
+                    $filter_css_value: $filter_css_value + ' #{$filter}(#{random(100) / 100 * ($max - $min) + $min}#{map-get($filter_props, units)})';
+                }
+            }
+            filter: #{$filter_css_value};
+            transform: translate(#{random(10) - 5}px, #{random(10) - 5}px) scale(#{random(5) / 100 + 1});
+        }
+    }
+}

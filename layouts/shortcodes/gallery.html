@@ -1,0 +1,294 @@
+{{- $dir := .Get "dir" | default (.Get 0) | default "images" -}}
+{{- $galleryId := printf "gallery-%s" ($dir | replaceRE "[^a-zA-Z0-9]+" "-") -}}
+{{- $dirPath := printf "static/%s" $dir -}}
+
+{{- if fileExists $dirPath -}}
+<div class="gallery-wrapper-{{ $galleryId }}">
+  <div class="gallery gallery-{{ $galleryId }}">
+    {{- $images := slice -}}
+    {{- range (readDir $dirPath) -}}
+    {{- if and (not .IsDir) (in (slice ".jpg" ".jpeg" ".png" ".gif" ".webp") (path.Ext .Name | lower)) -}}
+    {{- $images = $images | append . -}}
+    {{- end -}}
+    {{- end -}}
+    {{- range $index, $image := $images -}}
+    {{- $imgPath := printf "/%s/%s" $dir $image.Name -}}
+    <div class="gallery-item">
+      <img src="{{ $imgPath }}" alt="Gallery image {{ $index }}" loading="lazy" data-gallery-id="{{ $galleryId }}">
+    </div>
+    {{- end -}}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const gallery = document.querySelector('.gallery-{{ $galleryId }}');
+    const images = gallery.querySelectorAll('img[data-gallery-id="{{ $galleryId }}"]');
+    let loadedCount = 0;
+    
+    // Fullscreen overlay setup
+    let overlay = document.querySelector('.gallery-fullscreen-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.className = 'gallery-fullscreen-overlay';
+      overlay.innerHTML = '<span class="fullscreen-close">&times;</span><img src="" alt="Fullscreen image">';
+      document.body.appendChild(overlay);
+      
+      overlay.addEventListener('click', function() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+      
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    // Filter configuration for glitch effect
+    const filters = {
+      saturate: { units: '', probability: 0.2, min: 1, max: 10 },
+      'hue-rotate': { units: 'deg', probability: 1, min: 0, max: 360 },
+      invert: { units: '', probability: 0.033, min: 1, max: 1 },
+      contrast: { units: '', probability: 0.1, min: 1, max: 10 },
+      brightness: { units: '%', probability: 0.05, min: 25, max: 75 }
+    };
+    
+    function generateGlitchFilter() {
+      let filterStr = '';
+      for (const [name, props] of Object.entries(filters)) {
+        if (Math.random() < props.probability) {
+          const value = Math.random() * (props.max - props.min) + props.min;
+          filterStr += ` ${name}(${value}${props.units})`;
+        }
+      }
+      return filterStr.trim() || 'none';
+    }
+    
+    function generateGlitchTransform() {
+      const tx = Math.random() * 10 - 5;
+      const ty = Math.random() * 10 - 5;
+      const scale = Math.random() * 0.05 + 1.02;
+      return `translate(${tx}px, ${ty}px) scale(${scale})`;
+    }
+    
+    images.forEach(img => {
+      const item = img.closest('.gallery-item');
+      let glitchInterval = null;
+      let glitchTimeout = null;
+      let isAnimating = false;
+      
+      // Glitch effect on click, then fullscreen after animation
+      img.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (isAnimating) return;
+        
+        isAnimating = true;
+        const imgSrc = this.src;
+        
+        // Run glitch animation
+        glitchInterval = setInterval(() => {
+          if (Math.random() < 0.666) {
+            img.style.filter = generateGlitchFilter();
+            img.style.transform = generateGlitchTransform();
+          }
+        }, 50);
+        
+        // After 200ms, stop animation and show fullscreen
+        glitchTimeout = setTimeout(() => {
+          clearInterval(glitchInterval);
+          img.style.filter = '';
+          img.style.transform = '';
+          isAnimating = false;
+          
+          // Show fullscreen
+          const overlayImg = overlay.querySelector('img');
+          overlayImg.src = imgSrc;
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }, 200);
+      });
+      
+      if (img.complete) {
+        checkAndLayout();
+      } else {
+        img.addEventListener('load', checkAndLayout);
+      }
+    });
+    
+    function checkAndLayout() {
+      loadedCount++;
+      if (loadedCount === images.length) {
+        layoutGallery();
+      }
+    }
+    
+    function layoutGallery() {
+      const items = Array.from(gallery.querySelectorAll('.gallery-item'));
+      const processedIndices = new Set();
+      
+      items.forEach((item, index) => {
+        if (processedIndices.has(index)) return;
+        
+        const img = item.querySelector('img');
+        const aspectRatio = img.naturalWidth / img.naturalHeight;
+        const isPortrait = aspectRatio < 1;
+        
+        if (isPortrait) {
+          item.classList.add('portrait');
+          
+          // Check if next item is also portrait to pair them (V+V pattern)
+          if (index + 1 < items.length && !processedIndices.has(index + 1)) {
+            const nextItem = items[index + 1];
+            const nextImg = nextItem.querySelector('img');
+            const nextAspectRatio = nextImg.naturalWidth / nextImg.naturalHeight;
+            const nextIsPortrait = nextAspectRatio < 1;
+            
+            if (nextIsPortrait) {
+              // Two portraits side-by-side (V+V pattern)
+              item.classList.add('portrait-paired');
+              nextItem.classList.add('portrait');
+              nextItem.classList.add('portrait-paired');
+              processedIndices.add(index + 1);
+            } else {
+              // Portrait followed by horizontal images (V+H+H pattern)
+              item.classList.add('portrait-lead');
+              // Look ahead for the next two items
+              if (index + 2 < items.length) {
+                nextItem.classList.add('horizontal-paired');
+                items[index + 2].classList.add('horizontal-paired');
+                processedIndices.add(index + 1);
+                processedIndices.add(index + 2);
+              }
+            }
+          }
+        } else {
+          item.classList.add('horizontal');
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Fullscreen overlay */
+  .gallery-fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    cursor: zoom-out;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .gallery-fullscreen-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .gallery-fullscreen-overlay img {
+    max-width: 95vw;
+    max-height: 95vh;
+    object-fit: contain;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  }
+  
+  .gallery-fullscreen-overlay .fullscreen-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10000;
+  }
+  
+  .gallery-fullscreen-overlay .fullscreen-close:hover {
+    color: #ccc;
+  }
+
+  .gallery-{{ $galleryId }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .gallery-{{ $galleryId }} .gallery-item {
+    width: 100%;
+    display: flex;
+    cursor: zoom-in;
+    overflow: hidden;
+  }
+  
+  .gallery-{{ $galleryId }} .gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.05s ease;
+  }
+  
+  /* Horizontal images span both columns */
+  .gallery-{{ $galleryId }} .gallery-item.horizontal {
+    grid-column: 1 / -1;
+  }
+  
+  /* Two portraits side-by-side (V+V pattern) */
+  .gallery-{{ $galleryId }} .gallery-item.portrait-paired {
+    grid-column: auto;
+  }
+  
+  /* Portrait images that lead a V+H+H pattern */
+  .gallery-{{ $galleryId }} .gallery-item.portrait-lead {
+    grid-column: 1;
+    grid-row: span 2;
+  }
+  
+  .gallery-{{ $galleryId }} .gallery-item.portrait-lead img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  /* Horizontal images paired with a portrait (V+H+H pattern) */
+  .gallery-{{ $galleryId }} .gallery-item.horizontal-paired {
+    grid-column: 2;
+    grid-row: span 1;
+  }
+  
+  /* Regular portraits not in a special pattern */
+  .gallery-{{ $galleryId }} .gallery-item.portrait:not(.portrait-lead):not(.horizontal-paired):not(.portrait-paired) {
+    grid-column: auto;
+  }
+  
+  /* Mobile: single column, all images behave the same */
+  @media (max-width: 768px) {
+    .gallery-{{ $galleryId }} {
+      grid-template-columns: 1fr;
+    }
+    
+    .gallery-{{ $galleryId }} .gallery-item {
+      grid-column: 1 !important;
+      grid-row: span 1 !important;
+    }
+    
+    .gallery-{{ $galleryId }} .gallery-item.portrait-lead img {
+      height: auto;
+      object-fit: contain;
+    }
+  }
+</style>
+{{- end -}}
