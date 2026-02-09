@@ -1,0 +1,201 @@
+/*
+  Custom styles for larger content border
+  */
+
+/* Grungy cyberpunk fonts */
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Major+Mono+Display&display=swap');
+
+:root {
+  --font-mono: 'VT323', 'Courier New', monospace;
+  --font-display: 'Major Mono Display', monospace;
+}
+
+body {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  // background: #DBDAEA;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  text-transform: lowercase;
+  letter-spacing: 0.05em;
+}
+
+  .container {
+    padding-top: 1rem;
+    // max-width: 90rem;
+  } 
+  
+.book-brand {
+  font-size: 1.3rem;
+  padding-bottom: 1.5rem;
+}
+
+.book-page {
+  // border-left: 0.01rem solid #34629f;
+  // padding-left: 5rem;
+  // padding-right: 20rem;
+  padding-top: 2rem; /* Start content at the top */
+  padding-left: 2.5%;
+  // Remove top margin from first child to ensure content starts at top
+  > :first-child {
+    margin-top: 0;
+  }
+  @media (max-width: 768px) {
+      padding-left: 1rem;
+  }
+}
+
+.book-menu .book-menu-content {
+  padding-left: 3rem;
+  padding-top: 2rem;
+  padding-bottom: 10rem; /* Add space for copyright at bottom */
+  font-size: 0.9rem;
+  position: relative; /* Override fixed positioning from theme */
+  // background: #DBDAEA; /* Ensure menu background matches body */
+  @media (max-width: 768px) {
+      padding-left: 1rem;
+  }
+}
+
+/* Copyright at bottom of viewport */
+.book-menu-copyright {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 16rem; /* Same as menu width */
+  padding: 1rem;
+  padding-left: 3rem; /* Match menu padding */
+  font-size: 0.875rem;
+  color: #666; /* Slightly muted color */
+  // background: #DBDAEA; /* Match body/menu background */
+  pointer-events: none; /* Allow clicks to pass through to content below */
+  @media (max-width: 768px) {
+    padding-left: 1rem; /* Match mobile menu padding */
+  }
+}
+
+
+/* Remove border from embedded videos/iframes */
+.markdown iframe {
+  border: none;
+}
+
+/* Gallery alignment */
+.gallery-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  
+  .image-gallery {
+    text-align: right;
+    // width: 85%;
+    // max-width: 85%;
+      @media (max-width: 768px) {
+      width: 100%;
+    max-width: 100%;
+  }
+    
+    img {
+      height: auto;
+      object-fit: cover;
+      display: block;
+      margin-left: auto;
+      align-items: right;
+      // margin-bottom: 2rem;
+    }
+    
+    // Only apply these styles to non-grid and non-ragged galleries
+    &:not(.gallery-type-grid):not(.gallery-type-ragged) img {
+      width: 100%;
+    }
+    
+    // On smaller screens, allow gallery to take more space
+    @media (max-width: 768px) {
+      max-height: 100%;
+      max-width: 100vh;
+      text-align: left;
+      height: 50vh;
+    }
+  }
+}
+
+/* Slideshow styles */
+.slideshow-container {
+  position: relative;
+  height: 90vh;
+  margin-left: auto;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  
+  img {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    height: 95vh;
+    object-fit: cover;
+    opacity: 0;
+    animation: slideshow 18s infinite;
+    
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 6s; }
+    &:nth-child(3) { animation-delay: 12s; }
+  }
+  
+
+@keyframes slideshow {
+  0% { opacity: 0; }
+  3% { opacity: 1; }
+  30% { opacity: 1; }
+  33% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Hide scrollbar on index page (desktop only) */
+@media (min-width: 769px) {
+  body.book-kind-home {
+    overflow: hidden;
+  }
+}
+
+}
+
+iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: none;
+  }
+
+/* Gallery styles */
+[class^="gallery-wrapper-"] {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+/* Text container */
+.text-container {
+  max-width: 50%;
+  margin-top: 0;
+  padding-top: 0;
+  
+  > :first-child {
+    margin-top: 0;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
