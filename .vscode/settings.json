@@ -1,8 +1,8 @@
 {
-  "[html]": {
-    "editor.formatOnSave": false
-  },
-  "files.associations": {
-    "layouts/**/*.html": "html"
-  }
+    "[html]": {
+        "editor.formatOnSave": false
+    },
+    "files.associations": {
+        "layouts/**/*.html": "html"
+    }
 }
