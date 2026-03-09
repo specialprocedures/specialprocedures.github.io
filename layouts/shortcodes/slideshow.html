@@ -21,158 +21,38 @@
 </div>
 
 <style>
-    .slideshow- {
-            {
-            $slideshowId
-        }
-    }
+.slideshow-{{ $slideshowId }} {
+    position: relative;
+    height: {{ $height }};
+    margin-left: auto;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
 
-        {
-        position: relative;
+.slideshow-{{ $slideshowId }} img {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    height: 95vh;
+    object-fit: cover;
+    opacity: 0;
+    animation: slideshow-{{ $slideshowId }} {{ $totalDuration }}s infinite;
+}
 
-        height: {
-                {
-                $height
-            }
-        }
+{{- range $index, $image := $images }}
+.slideshow-{{ $slideshowId }} img:nth-child({{ add $index 1 }}) {
+    animation-delay: {{ mul $index $durationInt }}s;
+}
+{{- end }}
 
-        ;
-        margin-left: auto;
-        overflow: hidden;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    .slideshow- {
-            {
-            $slideshowId
-        }
-    }
-
-    img {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-        height: 95vh;
-        object-fit: cover;
-        opacity: 0;
-
-        animation: slideshow- {
-                {
-                $slideshowId
-            }
-        }
-
-            {
-                {
-                $totalDuration
-            }
-        }
-
-        s infinite;
-    }
-
-        {
-            {
-            - range $index,
-            $image : =$images
-        }
-    }
-
-    .slideshow- {
-            {
-            $slideshowId
-        }
-    }
-
-    img:nth-child({
-            {
-            add $index 1
-        }
-
-    }) {
-        animation-delay: {
-                {
-                mul $index $durationInt
-            }
-        }
-
-        s;
-    }
-
-        {
-            {
-            - end
-        }
-    }
-
-    @keyframes slideshow- {
-            {
-            $slideshowId
-        }
-    }
-
-        {
-        0% {
-            opacity: 0;
-        }
-
-            {
-                {
-                div 3.0 (float $totalDuration) | mul 100
-            }
-        }
-
-        % {
-            opacity: 1;
-        }
-
-            {
-                {
-                div (float $durationInt) (float $totalDuration) | mul 100 | mul 0.9
-            }
-        }
-
-        % {
-            opacity: 1;
-        }
-
-            {
-                {
-                div (float $durationInt) (float $totalDuration) | mul 100
-            }
-        }
-
-        % {
-            opacity: 0;
-        }
-
-        100% {
-            opacity: 0;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .slideshow- {
-                {
-                $slideshowId
-            }
-        }
-
-            {
-            height: 50vh;
-        }
-
-        .slideshow- {
-                {
-                $slideshowId
-            }
-        }
-
-        img {
-            height: 50vh;
-        }
-    }
+@keyframes slideshow-{{ $slideshowId }} {
+    0% { opacity: 0; }
+    {{ div 5.0 (float $totalDuration) | mul 100 }}% { opacity: 1; }
+    {{ div (float $durationInt) (float $totalDuration) | mul 100 }}% { opacity: 1; }
+    {{ div (add (float $durationInt) 1.0) (float $totalDuration) | mul 100 }}% { opacity: 0; }
+    100% { opacity: 0; }
+}
 </style>
